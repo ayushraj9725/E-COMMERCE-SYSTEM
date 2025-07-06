@@ -1,0 +1,52 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9015/eureka/  # URL of the Eureka Server where the client should register
+    fetch-registry: true       # (usually true for clients)
+    register-with-eureka: true # (usually true for clients)
+
+  instance:
+    prefer-ip-address: true               # Use IP instead of hostname for registration (useful for containers)
+    lease-renewal-interval-in-seconds: 10 # (default is 30)
+    lease-expiration-duration-in-seconds: 30 # (default is 90)
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        max-attempts:  3   # The system will retry up to 3 times before failing.
+        waitDuration: 10s  # The system will wait 10 seconds between each retry attempt.
+    instances:
+      inventoryRetry:
+        baseConfig: default  # Inherits settings from the default config.
+        waitDuration: 200ms # Overrides the global setting, making the wait time 200 milliseconds for inventoryRetry.
+  ratelimiter:
+    instances:
+      inventoryRateLimiter:
+        limitRefreshPeriod : 5s  # the limit resets every 5 seconds. This means that after every 5 seconds, a new request will be allowed.
+        limitForPeriod: 1       # Allows only 1 request per refresh period. If multiple requests come within this 5-second window, they will be blocked or delayed.
+        timeoutDuration: 1s     # Allows only 1 request per refresh period. If multiple requests come within this 5-second window, they will be blocked or delayed.
+  circuitbreaker:
+    instances:
+      inventoryCircuitBreaker:
+        registerHealthIndicator: true  # Expose circuit breaker health via the actuator
+        slidingWindowSize: 10          # Size of the sliding window for call recording
+        slidingWindowType: COUNT_BASED # Use a count-based sliding window
+        minimumNumberOfCalls: 10       # Minimum number of calls before calculating failure rate
+        failureRateThreshold: 50       # If 50% (5 out of 10) calls fail, the circuit goes to OPEN state
+        waitDurationInOpenState: 1s   # Time the circuit stays OPEN before moving to HALF_OPEN
+        permittedNumberOfCallsInHalfOpenState: 3  # Number of test calls in HALF_OPEN state
+        eventConsumerBufferSize: 10    # Buffer size for event logs
+
+# enable actuator with the help of management to check circuitbreaker
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
