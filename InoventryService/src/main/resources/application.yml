@@ -1,0 +1,12 @@
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9015/eureka/  # URL of the Eureka Server where the client should register
+    fetch-registry: true       # (usually true for clients)
+    register-with-eureka: true # (usually true for clients)
+
+  instance:
+    prefer-ip-address: true               # Use IP instead of hostname for registration (useful for containers)
+    lease-renewal-interval-in-seconds: 10 # (default is 30)
+    lease-expiration-duration-in-seconds: 30 # (default is 90)

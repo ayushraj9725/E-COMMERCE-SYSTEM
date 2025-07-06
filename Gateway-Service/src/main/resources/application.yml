@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: GATEWAY-SERVICE  # Name of your microservice
+
+  #api-gateway config
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: order-service
+#          uri: lb://ORDER-SERVICE
+#          predicates:
+#            - Path=/api/v1/orders/**
+#          filters:
+#            - StripPrefix=2
+#            - RedirectTo=302
+#
+#        - id: inventory-service
+#          uri: lb://INVENTORY-SERVICE
+#          predicates:
+#            - Path=/api/v1/products/**
+#          filters:
+#            - StripPrefix=2
+#            - AddRequestHeader=X-Custom-Header, ABCD
+
+# this configuration is not working in the new spring release we have to do manual configuration. check their routing in webConfig class
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9015/eureka/  # URL of the Eureka Server where the client should register
+    fetch-registry: true       # (usually true for clients)
+    register-with-eureka: true # (usually true for clients)
+
+  instance:
+    prefer-ip-address: true               # Use IP instead of hostname for registration (useful for containers)
+    lease-renewal-interval-in-seconds: 10 # (default is 30)
+    lease-expiration-duration-in-seconds: 30 # (default is 90)
+
+server:
+  port: 9025
