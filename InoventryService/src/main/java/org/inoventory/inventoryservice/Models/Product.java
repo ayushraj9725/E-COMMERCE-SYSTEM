@@ -2,8 +2,8 @@ package org.inoventory.inventoryservice.Models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
@@ -29,10 +29,10 @@ public class Product {
     private Integer stock;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @CreatedBy
+    @CreatedDate
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @LastModifiedBy
+    @LastModifiedDate
     private Date updatedAt ;
 }

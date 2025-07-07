@@ -1,8 +1,6 @@
 package org.inventory.gatewayservice.Configurations;
 
-import lombok.RequiredArgsConstructor;
 import org.inventory.gatewayservice.Filters.LoggingOrderFilter;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +32,10 @@ public class RouteConfig {
 //                              .addRequestHeader("X-Custom-Header","ABCD") // adding the custom header
                        )
                         .uri("lb://ORDER-SERVICE"))
+                .route("order-service",r -> r
+                        .path("/api/v1/auth/**")
+                        .uri("lb://USER-SERVICE"))
+
                 .build();
 
     }
