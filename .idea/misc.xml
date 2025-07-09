@@ -6,6 +6,7 @@
     <file type="web" url="file://$PROJECT_DIR$/Gateway-Service" />
     <file type="web" url="file://$PROJECT_DIR$/InoventryService" />
     <file type="web" url="file://$PROJECT_DIR$/OrderService" />
+    <file type="web" url="file://$PROJECT_DIR$/UserAuthService" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="ms-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

@@ -6,6 +6,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.innoventry.orderservice.DTOS.OrderRequestDto;
+import org.innoventry.orderservice.DTOS.OrderResponseDto;
 import org.innoventry.orderservice.InterServiceCommunication.InventoryFeignClient;
 import org.innoventry.orderservice.Models.OrderItems;
 import org.innoventry.orderservice.Models.OrderStatus;
@@ -28,7 +29,7 @@ public class OrderService {
     @CircuitBreaker(name = "inventoryCircuitBreaker",fallbackMethod = "createOrderFallBack")
     @RateLimiter(name = "inventoryRateLimiter", fallbackMethod = "createOrderFallBack") // it will limit the no of request made with in a given time window (sliding window size) like say 10 requests in a second, Reject any request that exceeds the defined limit. Apply a fallback method to deal with rejected requests gracefully.
     @Retry(name = "inventoryRetry", fallbackMethod = "createOrderFallBack") // this help to keep our system reliable at calling time; retry depend upon name like what to do
-    public OrderRequestDto createOrder(OrderRequestDto orderRequestDto) {   // now if we hit the api without running inventory service, we can still get response instead of showing internal errors or any server status or site can't reach, this is because of circuit breaker.
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, String username) {   // now if we hit the api without running inventory service, we can still get response instead of showing internal errors or any server status or site can't reach, this is because of circuit breaker.
                                                                             // it will give empty orderRequestDto (because inventoryService throw the exception) retry automatically trigger and avoid the retry request after maxTimeLimit, and another side if multiple requests come continuously that will be blocked by ratelimiter
 
         log.info("Calling the createOrder method");
@@ -40,10 +41,11 @@ public class OrderService {
         }
 
         orders.setTotalPrice(totalPrice);
+        orders.setUsername(username);
         orders.setOrderStatus(OrderStatus.CONFIRMED);
 
         Orders savedOrder = orderRepository.save(orders);
-        return  modelMapper.map(savedOrder,OrderRequestDto.class);
+        return  modelMapper.map(savedOrder,OrderResponseDto.class);
     }
 
     //fallback method
@@ -53,10 +55,10 @@ public class OrderService {
     }
 
 
-    public boolean cancelOrder(Long orderId) {
-        log.info("Cancelling order with ID: {}", orderId);
+    public boolean cancelOrder(Long orderId ,String username) {
+        log.info("Cancelling order with ID: {}", orderId + " and " +username);
 
-        Orders order = orderRepository.findById(orderId)
+        Orders order = orderRepository.findByIdAndUserEmail(orderId,username)
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
 
         if (order.getOrderStatus() == OrderStatus.SHIPPED || order.getOrderStatus() == OrderStatus.DELIVERED) {
@@ -89,11 +91,11 @@ public class OrderService {
     }
 
 
-    public List<OrderRequestDto> getAllOrders(){
+    public List<OrderResponseDto> getAllOrders(String username){
         log.info("Fetching all orders");
-        List<Orders> orders = orderRepository.findAll();
+        List<Orders> orders = orderRepository.findAllByUsername(username);
         return orders.stream()
-                .map(order -> modelMapper.map(order, OrderRequestDto.class))
+                .map(order -> modelMapper.map(order, OrderResponseDto.class))
                 .toList();
     }
 

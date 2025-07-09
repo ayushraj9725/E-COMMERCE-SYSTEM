@@ -22,6 +22,8 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Orders {
 
+    private String username ; // this is for building relationship with the user belong from diff database, also it is necessary to keep it here if any order made then system owner can know who made the order
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

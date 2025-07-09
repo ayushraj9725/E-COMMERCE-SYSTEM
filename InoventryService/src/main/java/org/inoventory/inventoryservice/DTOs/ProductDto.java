@@ -7,6 +7,8 @@ import java.util.Date;
 @Data
 public class ProductDto {
 
+    private String userEmail;
+
     private Long id;
 
     private String title;

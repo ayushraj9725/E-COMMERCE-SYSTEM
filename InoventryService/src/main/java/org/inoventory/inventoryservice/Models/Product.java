@@ -18,6 +18,8 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
 
+    private String userEmail; // seller email who is user and this email is username of user, so I am keeping it here
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +27,8 @@ public class Product {
     private String title;
 
     private Double price;
+
+    private String description;
 
     private Integer stock;
 
@@ -35,4 +39,5 @@ public class Product {
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     private Date updatedAt ;
+
 }

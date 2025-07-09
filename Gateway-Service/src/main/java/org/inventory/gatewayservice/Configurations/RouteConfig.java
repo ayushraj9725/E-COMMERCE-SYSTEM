@@ -32,8 +32,11 @@ public class RouteConfig {
 //                              .addRequestHeader("X-Custom-Header","ABCD") // adding the custom header
                        )
                         .uri("lb://ORDER-SERVICE"))
+
                 .route("order-service",r -> r
-                        .path("/api/v1/auth/**")
+                        .path("/api/v1/auth/user/**" ).or().path("/api/v1/auth/admin/**")
+                        .filters(f->f
+                                .addRequestHeader("X-Auth-Token","Bearer ${authToken"))
                         .uri("lb://USER-SERVICE"))
 
                 .build();

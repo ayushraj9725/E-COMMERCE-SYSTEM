@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/InoventryService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/InoventryService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ManageInnoventrySystem.iml" filepath="$PROJECT_DIR$/.idea/ManageInnoventrySystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/OrderService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/OrderService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/UserAuthService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/UserAuthService.main.iml" />
     </modules>
   </component>
 </project>

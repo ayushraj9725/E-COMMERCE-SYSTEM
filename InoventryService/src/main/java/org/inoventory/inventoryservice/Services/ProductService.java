@@ -50,17 +50,23 @@ public class ProductService {
         return totalPrice;
     }
 
-    public ProductDto addProduct(ProductRequestDto productRequestDto){
-        log.info("Adding the product");
-        Product product = modelMapper.map(productRequestDto,Product.class);
-        productRepository.save(product); // added the product in db
-        return modelMapper.map(product,ProductDto.class);
+    public ProductDto addProduct(ProductRequestDto productRequestDto, String userEmail) {
+        log.info("Adding the product for seller: {}", userEmail);
+        // Map request to entity
+        Product product = modelMapper.map(productRequestDto, Product.class);
+        // Set the seller's email (from the Gateway-provided header)
+        product.setUserEmail(userEmail);  // Make sure the Product has this field
+        // Save product in DB
+        product = productRepository.save(product);
+        // Convert entity back to DTO
+        return modelMapper.map(product, ProductDto.class);
     }
 
-    public ProductDto updateProduct(Long id , ProductRequestDto productRequestDto){
+
+    public ProductDto updateProduct(Long id , ProductRequestDto productRequestDto,String userEmail){
         log.info("Updating the products ");
-        Product olderProduct = productRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Product not found with id: "+id));
+        Product olderProduct = productRepository.findByIdAndUserEmail(id,userEmail)
+                .orElseThrow(()-> new RuntimeException("Product not found with id and email : "+id +" "+ userEmail));
 
         modelMapper.map(productRequestDto,olderProduct); // Map the new values from new request DTO into the existing entity
 
@@ -70,10 +76,10 @@ public class ProductService {
         return modelMapper.map(olderProduct,ProductDto.class);
     }
 
-    public boolean deleteProduct(Long id) {
+    public boolean deleteProduct(Long id,String userEmail) {
         log.info("Deleting product with ID: {}", id);
 
-        if (!productRepository.existsById(id)) {
+        if (!productRepository.existsByIdAndUserEmail(id,userEmail)) {
             log.warn("Product with ID {} not found. Deletion skipped.", id);
             return false;
         }
@@ -84,21 +90,20 @@ public class ProductService {
     }
 
 
+    public List<ProductDto> getAllProducts(String userEmail) {
+        log.info("Fetching all products for seller: {}", userEmail);
 
-    public List<ProductDto> getAllProducts() {
-        log.info("Fetching all inventory items");
-        List<Product> inventories = productRepository.findAll();
+        List<Product> inventories = productRepository.findAllByUserEmail(userEmail);
 
         return inventories.stream()
-                .map(products -> modelMapper.map(products,ProductDto.class))
-                //.collect(Collectors.toList());
+                .map(product -> modelMapper.map(product, ProductDto.class))
                 .toList();
     }
 
-    public ProductDto getProductById(Long id) {
-        log.info("Fetching Product with Id: {}",id);
-        Optional<Product> inventory = productRepository.findById(id);
 
+    public ProductDto getProductById(Long id,String userEmail) {
+        log.info("Fetching Product with Id: {}",id);
+        Optional<Product> inventory = productRepository.findByIdAndUserEmail(id,userEmail);
         return inventory.map(item -> modelMapper.map(item,ProductDto.class))
                 .orElseThrow(()->new RuntimeException("Inventory not found"));
     }
