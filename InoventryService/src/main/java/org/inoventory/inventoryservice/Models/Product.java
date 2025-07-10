@@ -32,6 +32,9 @@ public class Product {
 
     private Integer stock;
 
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date createdAt;

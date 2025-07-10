@@ -109,6 +109,15 @@ public class ProductController {
 
     }
 
+    @GetMapping("/get/{id}")
+    public String getProductTitleById(@PathVariable Long id){
+        log.info("Fetching product by id via controller and returning to order service");
+        System.out.println(10);
+        String title = productService.ProductTitle(id);
+        System.out.println(title);
+        return title;
+    }
+
     /*
 
     //from "org.springframework.cloud.client.discovery.DiscoveryClient" package

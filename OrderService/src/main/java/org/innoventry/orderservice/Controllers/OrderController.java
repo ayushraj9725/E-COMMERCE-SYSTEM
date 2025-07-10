@@ -27,16 +27,17 @@ public class OrderController {
         return "Hello from OrderService";
     }
 
-    @PostMapping("/create-order")
+    @PostMapping("/place-order")
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDto orderRequestDto,
                                                        @RequestHeader("X-User-Email") String username){
         try{
-            OrderResponseDto orderRequestDto1 = orderService.createOrder(orderRequestDto,username);
-            return new ResponseEntity<>(orderRequestDto1, HttpStatus.CREATED);
+            System.out.println("Before Create Order");
+            OrderResponseDto responseDto = orderService.createOrder(orderRequestDto,username);
+            System.out.println("Before After Order");
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         }catch (Exception e){
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @PutMapping("/{id}/cancel-order")
@@ -85,7 +86,7 @@ public class OrderController {
     public ResponseEntity<?> getOrderById(@PathVariable Long id,@RequestHeader("X-User-Email")String username){
         log.info("Fetching order by id via controller");
         try{
-            OrderRequestDto order = orderService.getOrderById(id,username);
+            OrderResponseDto order = orderService.getOrderById(id,username);
             return ResponseEntity.ok(order);
         }catch (Exception e){
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);

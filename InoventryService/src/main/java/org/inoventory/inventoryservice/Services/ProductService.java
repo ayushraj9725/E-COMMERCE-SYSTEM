@@ -119,4 +119,11 @@ public class ProductService {
         return product.getStock() >= requestedQuantity;
     }
 
+    public String ProductTitle(Long productId){
+        System.out.println(11);
+        String title = productRepository.findProductTitleById(productId);
+        System.out.println(title);
+        return title;
+    }
+
 }

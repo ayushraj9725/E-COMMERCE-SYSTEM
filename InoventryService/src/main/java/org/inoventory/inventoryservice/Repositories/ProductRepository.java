@@ -2,6 +2,7 @@ package org.inoventory.inventoryservice.Repositories;
 
 import org.inoventory.inventoryservice.Models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product>  findByIdAndUserEmail(Long id , String userEmail);
 
     boolean existsByIdAndUserEmail(Long id, String userEmail);
+
+    @Query("SELECT p.title FROM Product p WHERE p.id = :id")
+    String findProductTitleById(Long id);
+
 }

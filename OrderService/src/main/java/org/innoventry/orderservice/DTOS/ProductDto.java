@@ -1,7 +1,6 @@
-package org.inoventory.inventoryservice.DTOs;
+package org.innoventry.orderservice.DTOS;
 
 import lombok.Data;
-import org.inoventory.inventoryservice.Models.Category;
 
 import java.util.Date;
 
@@ -13,8 +12,6 @@ public class ProductDto {
     private Long id;
 
     private String title;
-
-    private Category category;
 
     private Double price;
 
