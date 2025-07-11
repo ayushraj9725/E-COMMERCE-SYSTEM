@@ -10,6 +10,11 @@ import org.inoventory.inventoryservice.DTOs.ProductRequestDto;
 import org.inoventory.inventoryservice.Models.Product;
 import org.inoventory.inventoryservice.Repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -106,6 +111,13 @@ public class ProductService {
         Optional<Product> inventory = productRepository.findByIdAndUserEmail(id,userEmail);
         return inventory.map(item -> modelMapper.map(item,ProductDto.class))
                 .orElseThrow(()->new RuntimeException("Inventory not found"));
+    }
+
+
+    public Page<ProductDto> searchProducts(String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> result = productRepository.searchProducts(query,pageable);
+        return result.map(product -> modelMapper.map(product, ProductDto.class));
     }
 
 
